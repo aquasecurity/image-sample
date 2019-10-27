@@ -25,14 +25,12 @@ exports.parseHost = function (req, hostHeaderName) {
 
     hostHeaderName = (hostHeaderName ? hostHeaderName.toLowerCase() : 'host');
     var hostHeader = req.headers[hostHeaderName];
-    if (!hostHeader) {
+    if (!hostHeader)
         return null;
-    }
 
     var hostParts = hostHeader.match(internals.hostHeaderRegex);
-    if (!hostParts) {
+    if (!hostParts)
         return null;
-    }
 
     return {
         name: hostParts[1],
@@ -45,9 +43,8 @@ exports.parseHost = function (req, hostHeaderName) {
 
 exports.parseContentType = function (header) {
 
-    if (!header) {
+    if (!header)
         return '';
-    }
 
     return header.split(';')[0].trim().toLowerCase();
 };
@@ -57,17 +54,15 @@ exports.parseContentType = function (header) {
 
 exports.parseRequest = function (req, options) {
 
-    if (!req.headers) {
+    if (!req.headers)
         return req;
-    }
     
     // Obtain host and port information
 
     if (!options.host || !options.port) {
         var host = exports.parseHost(req, options.hostHeaderName);
-        if (!host) {
+        if (!host)
             return new Error('Invalid Host header');
-        }
     }
 
     var request = {
@@ -101,24 +96,20 @@ exports.parseAuthorizationHeader = function (header, keys) {
 
     keys = keys || ['id', 'ts', 'nonce', 'hash', 'ext', 'mac', 'app', 'dlg'];
 
-    if (!header) {
+    if (!header)
         return Boom.unauthorized(null, 'Hawk');
-    }
 
     var headerParts = header.match(/^(\w+)(?:\s+(.*))?$/);       // Header: scheme[ something]
-    if (!headerParts) {
+    if (!headerParts)
         return Boom.badRequest('Invalid header syntax');
-    }
 
     var scheme = headerParts[1];
-    if (scheme.toLowerCase() !== 'hawk') {
+    if (scheme.toLowerCase() !== 'hawk')
         return Boom.unauthorized(null, 'Hawk');
-    }
 
     var attributesString = headerParts[2];
-    if (!attributesString) {
+    if (!attributesString)
         return Boom.badRequest('Invalid header syntax');
-    }
 
     var attributes = {};
     var errorMessage = '';
@@ -149,9 +140,8 @@ exports.parseAuthorizationHeader = function (header, keys) {
         return '';
     });
 
-    if (verify !== '') {
+    if (verify !== '')
         return Boom.badRequest(errorMessage || 'Bad header format');
-    }
 
     return attributes;
 };
